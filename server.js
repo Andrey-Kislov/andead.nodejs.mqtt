@@ -1,6 +1,7 @@
 import express from 'express';
 import mqtt from 'mqtt';
 import bodyParser from 'body-parser';
+import { Pool } from 'pg';
 
 import { logInfo } from './services/common';
 import * as logService from './services/logs';
@@ -9,6 +10,23 @@ import * as actionService from './services/actions';
 
 const LISTEN_PORT = process.env.LISTEN_PORT || 5051;
 const MQTT_SERVER = process.env.MQTT_SERVER || 'wss://test.mosquitto.org:8081';
+
+const PGHOST = process.env.PGHOST || 'db'
+const PGUSER = process.env.PGUSER || 'postgres';
+const PGDATABASE = process.env.PGDATABASE || 'smarthome';
+const PGPASSWORD = process.env.PGPASSWORD || '';
+
+const postgresPool = new Pool({
+    host: PGHOST,
+    database: PGDATABASE,
+    user: PGUSER,
+    password: PGPASSWORD,
+    port: 5432,
+});
+
+postgresPool.on('connect', () => {
+    logInfo(`Connected to Postgre SQL`);
+});
 
 const app = express();
 var client = mqtt.connect(MQTT_SERVER);
@@ -20,7 +38,7 @@ client.on('connect', () => {
 client.on('message', (topic, message) => {
     console.log(JSON.parse(message.toString()));
 
-    logService.putMessage(topic, JSON.parse(message.toString()));
+    logService.putMessage(postgresPool, topic, JSON.parse(message.toString()));
 });
 
 app.use(bodyParser.json()); // support json encoded bodies

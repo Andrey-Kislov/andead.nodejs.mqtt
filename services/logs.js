@@ -2,12 +2,13 @@ import { getUserIdByTopic } from './common';
 
 var logMessages = [];
 
-export function putMessage(topic, message) {
-    logMessages.push({
-        user_id: getUserIdByTopic(topic),
-        topic: topic,
-        payload: message
-    });
+export async function putMessage(pool, topic, message) {
+    try {
+        const res = await pool.query('INSERT INTO zigbee_log (user_id, topic, payload) VALUES($1, $2, $3)', [getUserIdByTopic(topic), topic, message]);
+        console.log(res.rows[0]);
+    } catch (err) {
+        console.log(err.stack);
+    }
 }
 
 export function getMessagesByUserId(userId) {
