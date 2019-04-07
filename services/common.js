@@ -7,5 +7,5 @@ export function logInfo(message) {
 }
 
 export function getUserIdByTopic(topic) {
-    return Number(topic.replace(/\/([^/]+)$/, '').replace(/^(.+)\//, ''));
+    return topic.replace(/\/([^/]+)$/, '').replace(/^(.+)\//, '');
 }
