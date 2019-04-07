@@ -1,6 +1,9 @@
 FROM node:lts-alpine
 
-COPY dist/ /app
 WORKDIR /app
+COPY package*.json ./
 
-CMD node server.js
+RUN npm install
+COPY dist/ ./
+
+CMD ["node", "server.js"]
