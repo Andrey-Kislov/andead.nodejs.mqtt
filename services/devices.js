@@ -32,5 +32,8 @@ export async function getMyDevices(pool, userId, response) {
         }
     }
 
-    response.status(401);
+    response.status(401).json({
+        error: new Date(),
+        message: "Unauthorized"
+    });
 }
