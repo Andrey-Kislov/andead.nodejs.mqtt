@@ -64,17 +64,16 @@ app.listen(LISTEN_PORT, () => {
 });
 
 actionService.addRule({
-    id: 11,
     name: 'Test Angle X and Y',
-    user_id: '123400004321',
+    user_id: '271986833',
     rules: {
         'and': [{
-            topic: '0x005050500500511',
+            topic: '0x00158d0002b22a6d',
             criteria: 'angle_x',
             condition: '==',
             value: '10'
         },{
-            topic: '0x005050500500511',
+            topic: '0x00158d0002b22a6d',
             criteria: 'angle_y',
             condition: '==',
             value: '0'
@@ -82,4 +81,4 @@ actionService.addRule({
     }
 });
 
-actionService.checkMessageByRules('123400004321');
+actionService.checkMessageByRules('271986833');
