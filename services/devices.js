@@ -22,7 +22,7 @@ export async function getMyDevices(pool, userId, response) {
 
             response.status(200).json({
                 success: new Date(),
-                message: res.rows
+                devices: res.rows
             });
         } catch (err) {
             response.status(500).json({
