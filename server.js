@@ -52,6 +52,10 @@ app.post('/api/devices/add', (request, response) => {
     });
 });
 
+app.get('/api/devices', (request, response) => {
+    deviceService.getMyDevices(postgresPool, request.query.user_id, response);
+});
+
 app.get('/api/logs', (request, response) => {
     response.status(200).json({
         success: new Date(),
