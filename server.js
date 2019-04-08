@@ -63,7 +63,7 @@ app.listen(LISTEN_PORT, () => {
     logInfo(`Server listening on port ${LISTEN_PORT}`);
 });
 
-actionService.addRule({
+actionService.addRule(postgresPool, {
     name: 'Test Angle X and Y',
     user_id: '271986833',
     rules: {

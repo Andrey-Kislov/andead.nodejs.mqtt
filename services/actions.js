@@ -11,7 +11,7 @@ function isLogic(logic) {
     );
 }
 
-export function addRule(rule) {
+export async function addRule(pool, rule) {
     try {
         const res = await pool.query('INSERT INTO zigbee_rules (user_id, name, rules) VALUES($1, $2, $3::jsonb)', [rule.user_id, rule.name, rule.rules]);
         console.log(res.rows[0]);
