@@ -45,7 +45,7 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 app.post('/api/devices/add', (request, response) => {
-    deviceService.addDevice(client, request.body);
+    deviceService.addDevice(postgresPool, client, request.query.user_id, request.body);
 
     response.status(200).json({
         success: new Date()
