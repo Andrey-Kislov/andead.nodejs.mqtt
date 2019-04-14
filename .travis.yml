@@ -4,6 +4,7 @@ node_js:
 before_script:
   - chmod a+x ./deploy.sh
 script:
+  - npm test
   - npm run build
 cache: npm
 deploy:
