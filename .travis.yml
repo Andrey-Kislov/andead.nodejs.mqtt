@@ -4,7 +4,7 @@ node_js:
 before_script:
   - chmod a+x ./deploy.sh
 script:
-  - npm test
+  - npm run coverage
   - npm run build
 after_success: npm run coveralls
 cache: npm
