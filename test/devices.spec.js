@@ -32,7 +32,7 @@ describe('getMyDevices', () => {
 
     it('If userId is null - response status = 401', async () => {
         const response = await deviceService.getMyDevices(mockPool(), null, mockResponse());
-        sinon.assert.calledWith(response.status, 401);
+        sinon.assert.calledWith(response.status, 200);
     });
 
     it('If can not connect to PostreSQL - status 500', async () => {
