@@ -45,11 +45,7 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 app.post('/api/devices/add', (request, response) => {
-    deviceService.addDevice(postgresPool, client, request.query.userId, request.body);
-
-    response.status(200).json({
-        success: new Date()
-    });
+    deviceService.addDevice(postgresPool, client, request.query.userId, request.body, response);
 });
 
 app.get('/api/devices', (request, response) => {
@@ -57,7 +53,7 @@ app.get('/api/devices', (request, response) => {
 });
 
 app.get('/api/logs', (request, response) => {
-    response.status(200).json({
+    return response.status(200).json({
         success: new Date(),
         messages: logService.getMessagesByUserId(request.query.userId)
     });
