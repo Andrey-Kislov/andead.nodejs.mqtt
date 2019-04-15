@@ -4,6 +4,7 @@ node_js:
 before_script:
   - chmod a+x ./deploy.sh
 script:
+  - npm test
   - npm run build
 cache: npm
 deploy:
@@ -11,4 +12,4 @@ deploy:
     script: ./deploy.sh
     skip_cleanup: true
     on:
-      all_branches: true
+      branch: master

@@ -15,25 +15,32 @@ export async function addDevice(pool, mqttClient, userId, request) {
 }
 
 export async function getMyDevices(pool, userId, response) {
+    if (!pool) {
+        throw new TypeError('PostgreSQL Pool must be set!');
+    }
+    
+    if (!response) {
+        throw new TypeError('Express response must be set!');
+    }
+
     if (userId) {
         try {
             const res = await pool.query('SELECT id, user_id, name, topic FROM zigbee_devices WHERE user_id = $1', [userId]);
-            console.log(res.rows);
 
-            response.status(200).json({
+            return response.status(200).json({
                 success: new Date(),
                 devices: res.rows
             });
         } catch (err) {
-            response.status(500).json({
+            return response.status(500).json({
                 error: new Date(),
                 message: err.stack
             });
         }
     }
 
-    response.status(401).json({
+    return response.status(401).json({
         error: new Date(),
-        message: "Unauthorized"
+        message: 'Unauthorized'
     });
 }
