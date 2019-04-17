@@ -3,7 +3,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 
-import * as deviceService from '../services/devices';
+import DeviceService from '../services/devices';
 
 chai.use(chaiAsPromised);
 chai.should();
@@ -27,61 +27,53 @@ const mockMqttClient = () => {
     return mqttClient;
 };
 
-describe('getMyDevices', () => {
-    it('If PostgreSQL pool is null - throw TypeError', async () => {
-        await deviceService.getMyDevices(null, 12345, mockResponse()).should.be.rejectedWith(TypeError);
+const deviceService = new DeviceService(mockPool(), mockMqttClient());
+
+describe('DeviceService', async () => {
+    describe('getMyDevices', () => {
+        it('If Express response is null - throw TypeError', async () => {
+            await deviceService.getMyDevices(12345, null).should.be.rejectedWith(TypeError);
+        });
+
+        it('If userId is null - response status = 401', async () => {
+            const response = await deviceService.getMyDevices(null, mockResponse());
+            sinon.assert.calledWith(response.status, 401);
+        });
+
+        it('If all correct - status 200', async () => {
+            const response = await deviceService.getMyDevices(12345, mockResponse());
+            sinon.assert.calledWith(response.status, 200);
+        });
     });
 
-    it('If Express response is null - throw TypeError', async () => {
-        await deviceService.getMyDevices(mockPool(), 12345, null).should.be.rejectedWith(TypeError);
-    });
+    describe('addDevice', async () => {
+        it('If userId is null - status 401', async () => {
+            const response = await deviceService.addDevice(null, null, mockResponse());
+            sinon.assert.calledWith(response.status, 401);
+        });
 
-    it('If userId is null - response status = 401', async () => {
-        const response = await deviceService.getMyDevices(mockPool(), null, mockResponse());
-        sinon.assert.calledWith(response.status, 401);
-    });
+        it('If request is null - status 500', async () => {
+            const response = await deviceService.addDevice(12345, null, mockResponse());
+            sinon.assert.calledWith(response.status, 500);
+        });
 
-    it('If can not connect to PostreSQL - status 500', async () => {
-        const response = await deviceService.getMyDevices({}, 12345, mockResponse());
-        sinon.assert.calledWith(response.status, 500);
-    });
+        it('If request is empty - status 500', async () => {
+            const response = await deviceService.addDevice(12345, {}, mockResponse());
+            sinon.assert.calledWith(response.status, 500);
+        });
 
-    it('If all correct - status 200', async () => {
-        const response = await deviceService.getMyDevices(mockPool(), 12345, mockResponse());
-        sinon.assert.calledWith(response.status, 200);
-    });
-});
+        it('If request have only topic - status 500', async () => {
+            const response = await deviceService.addDevice(12345, { topic: 'TestTopic' }, mockResponse());
+            sinon.assert.calledWith(response.status, 500);
+        });
 
-describe('addDevice', async () => {
-    it('If PostgreSQL pool is null - throw TypeError', async () => {
-        await deviceService.addDevice(null, null, null, null, null).should.be.rejectedWith(TypeError);
-    });
+        it('If response is null - throw TypeError', async () => {
+            await deviceService.addDevice(12345, { name: 'TestName', topic: 'TestTopic' }, null).should.be.rejectedWith(TypeError);
+        });
 
-    it('If MQTT client is null - throw TypeError', async () => {
-        await deviceService.addDevice(mockPool(), null, null, null, null).should.be.rejectedWith(TypeError);
-    });
-
-    it('If Express response is null - throw TypeError', async () => {
-        await deviceService.addDevice(mockPool(), mockMqttClient(), null, null, null).should.be.rejectedWith(TypeError);
-    });
-
-    it('If userId is null - status 401', async () => {
-        const response = await deviceService.addDevice(mockPool(), mockMqttClient(), null, null, mockResponse());
-        sinon.assert.calledWith(response.status, 401);
-    });
-
-    it('If request object is null - status 500', async () => {
-        const response = await deviceService.addDevice(mockPool(), mockMqttClient(), 12345, null, mockResponse());
-        sinon.assert.calledWith(response.status, 500);
-    });
-
-    it('If request object is empty - status 500', async () => {
-        const response = await deviceService.addDevice(mockPool(), mockMqttClient(), 12345, {}, mockResponse());
-        sinon.assert.calledWith(response.status, 500);
-    });
-
-    it('If all correct - status 200', async () => {
-        const response = await deviceService.addDevice(mockPool(), mockMqttClient(), 12345, { topic: 'TestTopic', name: 'TestName'}, mockResponse());
-        sinon.assert.calledWith(response.status, 200);
+        it('If all correct - status 200', async () => {
+            const response = await deviceService.addDevice(12345, { name: 'TestName', topic: 'TestTopic' }, mockResponse());
+            sinon.assert.calledWith(response.status, 200);
+        });
     });
 });

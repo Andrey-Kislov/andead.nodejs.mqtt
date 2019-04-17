@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "mocha --require @babel/register",
+        "test-watch": "mocha --require @babel/register -- --watch",
         "coverage": "nyc --reporter=text mocha --require @babel/register",
         "coveralls": "nyc report --reporter=text-lcov | coveralls",
         "start": "babel-node server.js",
@@ -16,6 +17,7 @@
     "dependencies": {
         "body-parser": "^1.18.3",
         "express": "^4.16.4",
+        "joi": "^14.3.1",
         "mqtt": "^2.18.8",
         "pg": "^7.9.0"
     },
