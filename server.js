@@ -5,7 +5,7 @@ import { Pool } from 'pg';
 
 import { logInfo } from './services/common';
 import * as logService from './services/logs';
-import * as deviceService from './services/devices';
+import DeviceService from './services/devices';
 import * as actionService from './services/actions';
 
 const LISTEN_PORT = process.env.LISTEN_PORT || 5051;
@@ -44,12 +44,14 @@ client.on('message', (topic, message) => {
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+const deviceService = new DeviceService(postgresPool, client);
+
 app.post('/api/devices/add', (request, response) => {
-    deviceService.addDevice(postgresPool, client, request.query.userId, request.body, response);
+    deviceService.addDevice(request.query.userId, request.body, response);
 });
 
 app.get('/api/devices', (request, response) => {
-    deviceService.getMyDevices(postgresPool, request.query.userId, response);
+    deviceService.getMyDevices(request.query.userId, response);
 });
 
 app.get('/api/logs', (request, response) => {
