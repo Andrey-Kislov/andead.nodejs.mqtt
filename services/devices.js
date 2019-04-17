@@ -22,7 +22,10 @@ export default class DeviceService {
     
         if (userId) {
             try {
-                const res = await this.pool.query('SELECT id, user_id, name, topic FROM zigbee_devices WHERE user_id = $1', [userId]);
+                const res = await this.pool.query(
+                    'SELECT id, user_id, name, topic, image, description FROM zigbee_devices WHERE user_id = $1',
+                    [userId]
+                );
     
                 return response.status(200).json({
                     status: 'success',
@@ -52,8 +55,10 @@ export default class DeviceService {
                 await schemaValidator(request, 'deviceRequestSchema');
                 this.mqttClient.subscribe(request.topic, () => logInfo(`Subscribed to topic ${request.topic}`));
     
-                const res = await this.pool.query('INSERT INTO zigbee_devices (user_id, name, topic) VALUES($1, $2, $3)', 
-                    [userId, request.name, request.topic]);
+                const res = await this.pool.query(
+                    'INSERT INTO zigbee_devices (user_id, name, topic, image, description) VALUES($1, $2, $3, $4, $5)', 
+                    [userId, request.name, request.topic, request.image, request.description]
+                );
     
                 return response.status(200).json({
                     status: 'success',

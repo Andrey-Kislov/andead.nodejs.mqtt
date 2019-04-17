@@ -27,6 +27,13 @@ const mockMqttClient = () => {
     return mqttClient;
 };
 
+const mockRequest = {
+    name: 'Aqara Wall Wireless Switch',
+    topic: 'TestTopic',
+    image: '/images/devices/WXKG03LM.jpg',
+    description: 'This is test description'
+};
+
 const deviceService = new DeviceService(mockPool(), mockMqttClient());
 
 describe('DeviceService', async () => {
@@ -68,11 +75,11 @@ describe('DeviceService', async () => {
         });
 
         it('If response is null - throw TypeError', async () => {
-            await deviceService.addDevice(12345, { name: 'TestName', topic: 'TestTopic' }, null).should.be.rejectedWith(TypeError);
+            await deviceService.addDevice(12345, mockRequest, null).should.be.rejectedWith(TypeError);
         });
 
         it('If all correct - status 200', async () => {
-            const response = await deviceService.addDevice(12345, { name: 'TestName', topic: 'TestTopic' }, mockResponse());
+            const response = await deviceService.addDevice(12345, mockRequest, mockResponse());
             sinon.assert.calledWith(response.status, 200);
         });
     });
